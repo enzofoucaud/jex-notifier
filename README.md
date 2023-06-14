@@ -10,7 +10,7 @@ Edit `config.json` with your own values :
 - `discord_id` and `discord_token` are extracted from the url. [Discord webhook url is in the format of: https://discord.com/api/webhooks/{DISCORD_ID}/{DISCORD_TOKEN}]
 - `sleep_time` is the time in seconds to sleep between each check.
 - `tokens` is a list of tokens to monitor.
-  - `token` is the token name
+  - `token` is the token identifier
   - `price` is the price to monitor
   - `is_below` is a boolean value to indicate whether to monitor if the price is below the given price
   - `is_above` is a boolean value to indicate whether to monitor if the price is above the given price.
