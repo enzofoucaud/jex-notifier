@@ -46,35 +46,37 @@ func main() {
 		}
 
 		for _, token := range tokens {
-			log.Debug().Msg("--------------")
-			log.Debug().Msg("Checking token " + token.Name)
-			price, _ := jexchange.GetPricesTokensIdentifier(token.Identifier)
-			log.Debug().Float64("price.Rate", price.Rate).Msg("Token price")
-			// Check if pair is WAGMI
-			for _, cToken := range c.Tokens {
-				if cToken.Token == token.Identifier {
-					if cToken.IsBelow {
-						if price.Rate <= cToken.Price {
-							message := token.Name + " alert: token is below " + fmt.Sprintf("%f", price.Rate) + " " + price.Unit
-							err := Discord(message, c.DiscordID, c.DiscordToken)
-							if err != nil {
-								log.Err(err).Msg("error sending discord notification")
+			go func(token jexchange.Token) {
+				log.Debug().Msg("--------------")
+				log.Debug().Msg("Checking token " + token.Name)
+				price, _ := jexchange.GetPricesTokensIdentifier(token.Identifier)
+				log.Debug().Float64("price.Rate", price.Rate).Msg("Token price")
+				// Check if pair is WAGMI
+				for _, cToken := range c.Tokens {
+					if cToken.Token == token.Identifier {
+						if cToken.IsBelow {
+							if price.Rate <= cToken.Price {
+								message := token.Name + " alert: token is below " + fmt.Sprintf("%f", price.Rate) + " " + price.Unit
+								err := Discord(message, c.DiscordID, c.DiscordToken)
+								if err != nil {
+									log.Err(err).Msg("error sending discord notification")
+								}
+								log.Info().Msg("Notifier sent for " + token.Name)
 							}
-							log.Info().Msg("Notifier sent for " + token.Name)
 						}
-					}
-					if cToken.IsAbove {
-						if price.Rate >= cToken.Price {
-							message := token.Name + " alert: token is above " + fmt.Sprintf("%f", price.Rate) + " " + price.Unit
-							err := Discord(message, c.DiscordID, c.DiscordToken)
-							if err != nil {
-								log.Err(err).Msg("error sending discord notification")
+						if cToken.IsAbove {
+							if price.Rate >= cToken.Price {
+								message := token.Name + " alert: token is above " + fmt.Sprintf("%f", price.Rate) + " " + price.Unit
+								err := Discord(message, c.DiscordID, c.DiscordToken)
+								if err != nil {
+									log.Err(err).Msg("error sending discord notification")
+								}
+								log.Info().Msg("Notifier sent for " + token.Name)
 							}
-							log.Info().Msg("Notifier sent for " + token.Name)
 						}
 					}
 				}
-			}
+			}(token)
 		}
 		log.Debug().Msg("--------------")
 
