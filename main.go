@@ -11,6 +11,7 @@ import (
 	"github.com/disgoorg/snowflake/v2"
 	"github.com/enzofoucaud/exrond-notifier/config"
 	"github.com/enzofoucaud/exrond-notifier/jexchange"
+	"github.com/enzofoucaud/exrond-notifier/utils"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -66,7 +67,7 @@ func main() {
 						}
 						if cToken.IsAbove {
 							if price.Rate >= cToken.Price {
-								message := token.Name + " alert: token is above " + fmt.Sprintf("%f", price.Rate) + " " + price.Unit
+								message := token.Name + " alert: token is above " + fmt.Sprintf("%f", price.Rate) + " " + price.Unit + " | DEX - [" + price.Source + "](" + utils.GetDexUrl(price.Source) + ")"
 								err := Discord(message, c.DiscordID, c.DiscordToken)
 								if err != nil {
 									log.Err(err).Msg("error sending discord notification")

@@ -2,6 +2,7 @@ package jexchange
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -9,8 +10,9 @@ import (
 )
 
 type PricesTokensIdentifier struct {
-	Rate float64 `json:"rate"`
-	Unit string  `json:"unit"`
+	Rate   float64 `json:"rate"`
+	Unit   string  `json:"unit"`
+	Source string  `json:"source"`
 }
 
 func GetPricesTokensIdentifier(token string) (PricesTokensIdentifier, error) {
@@ -35,6 +37,8 @@ func GetPricesTokensIdentifier(token string) (PricesTokensIdentifier, error) {
 		log.Err(err).Msg("error reading response body")
 		return PricesTokensIdentifier{}, err
 	}
+
+	fmt.Println(string(body))
 
 	var p PricesTokensIdentifier
 	err = json.Unmarshal(body, &p)
